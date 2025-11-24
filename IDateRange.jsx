@@ -2113,4 +2113,399 @@ const IDate = ({ defaultValue, handleEffects, setCurrentSettingCompAction,schema
 
 export default IDate;
 
+import { intl } from '@chaoswise/intl';
+import { theme } from '@/theme';
+import { DynamicEnumType, EnumType } from '@/constants/common/formType';
+import {
+  EnumDateFormatType,
+  EnumDateRange,
+  EnumDateInitValue,
+} from '../../../../../constants';
+import { commonSchema } from '../commonSchema';
+
+import { langUtil } from '@/lang';
+
+import { Icon, Tooltip } from '@chaoswise/ui';
+export const schema = {
+  type: 'object',
+  properties: {
+    publicFieldName: commonSchema.publicFieldName,
+    fieldName: commonSchema.fieldName,
+    fieldCode: commonSchema.fieldCode,
+    dateFormatValue: {
+      name: 'dateFormatValue',
+      get title() {
+        return intl.get('0b37b15b-e8de-464f-8942-b6f5fc3e6ad2').d('日期格式');
+      },
+      type: 'string',
+      'x-component': DynamicEnumType?.dateFormatValue,
+      'x-props': {
+        dataSource: [
+          {
+            get label() {
+              return intl
+                .get('a52c814c-92da-42f2-adee-c959ac901384')
+                .d('年月日');
+            },
+            value: EnumDateFormatType.yearMonthDay,
+          },
+          {
+            get label() {
+              return intl
+                .get('2d1a324f-1543-43ab-bd27-275fc7162ffe')
+                .d('年月日时分秒');
+            },
+            value: EnumDateFormatType.all,
+          },
+          {
+            get label() {
+              return intl
+                .get('01a8fa49-6548-4041-a34f-aa414b51ad8e')
+                .d('年月日时分');
+            },
+            value: EnumDateFormatType.yearMonthDayHoursMinutes,
+          },
+        ],
+
+        defaultFormat: EnumDateFormatType.yearMonthDay,
+      },
+      'x-rules': [],
+    },
+    rangeType: {
+      //范围类型
+      name: 'rangeType',
+      colon: false,
+      get title() {
+        return intl.get('bc2940ac-2d01-43c3-ab70-ce89c152b0e6').d('时间范围');
+      },
+      'x-component': DynamicEnumType?.rangeTypeRadio,
+      readOnly: false,
+      'x-props': {
+        options: [
+          {
+            get label() {
+              return (
+                <div
+                  style={{ verticalAlign: 'middle', display: 'inline-block' }}
+                >
+                  {intl.get('6c271021-8697-498a-8e06-d848d25c11fb').d('自定义')}
+                  <span>：</span>
+                  <Tooltip
+                    title={intl
+                      .get('54aa99c9-51ea-471b-a235-3d745feb6c10')
+                      .d(
+                        '可以设置日期的动态范围，也可以与其他日期类字段形成限制，日期范围限制为大于等于/小于等于'
+                      )}
+                  >
+                    <Icon type='question-circle' />
+                  </Tooltip>
+                  <span
+                    style={{
+                      background: theme.background_color_33,
+                      position: 'absolute',
+                      zIndex: '998',
+                      display: 'inline-block',
+                      // width: '3em',
+                      // height: '1em',
+                      top: '1px',
+                    }}
+                  >
+                    &nbsp;
+                  </span>
+                </div>
+              );
+            },
+            value: 'CUSTOM',
+          },
+          {
+            get label() {
+              return (
+                <div
+                  style={{ verticalAlign: 'middle', display: 'inline-block' }}
+                >
+                  {intl
+                    .get('cc22685f-ff5f-46af-9bf9-b884017c35de')
+                    .d('按服务时间')}
+                  <span>：</span>
+                  <Tooltip
+                    title={intl
+                      .get('1ae4a848-9d78-4544-a9b5-2bae19ffbb63')
+                      .d(
+                        '该设置用于设置用户在填写工单可选择的时间范围，可选多个服务时间作为时间范围。设置好时间范围后需要对时间校验规则进行设置，有3个规则可选，分别是允许选择任意时间、允许选择范围内时间、不允许选择范围内时间，单选，默认选择允许选择任意时间。'
+                      )}
+                  >
+                    <Icon type='question-circle' />
+                  </Tooltip>
+                  <span
+                    style={{
+                      background: theme.background_color_33,
+                      position: 'absolute',
+                      zIndex: '998',
+                      display: 'inline-block',
+                      // width: '3em',
+                      // height: '1em',
+                      top: '1px',
+                    }}
+                  >
+                    &nbsp;
+                  </span>
+                </div>
+              );
+            },
+            value: 'SERVICETIME',
+          },
+          {
+            get label() {
+                return intl.get('deb6147e-b07d-4f6c-ba52-4b0b9ce872c6').d('扩展类')
+            },
+            value: "EXTEND"
+          }
+        ],
+      },
+    },
+    dateRange: {
+      //时间范围
+      name: 'dateRange',
+      colon: false,
+      type: 'string',
+      'x-component': DynamicEnumType?.dateRange,
+      readOnly: false,
+      'x-props': {
+        initOptions: [
+          {
+            id: EnumDateRange.unlimited,
+            key: EnumDateRange.unlimited,
+            get label() {
+              return langUtil.t(
+                intl.get('41e9c11e-3d8b-46a1-aad1-759c22efd849').d('无限制')
+              );
+            },
+            component: false,
+          },
+          {
+            id: EnumDateRange.today,
+            key: EnumDateRange.today,
+            get label() {
+              return langUtil.t(
+                intl.get('6ce11558-7abc-4de7-81a1-62b272fad083').d('今天')
+              );
+            },
+            component: false,
+          },
+          {
+            id: EnumDateRange.today,
+            key: EnumDateRange.todayBefore,
+            get label() {
+              return langUtil.t(
+                intl.get('a73dd469-bc43-47fd-9482-6f1f2fc2b78f').d('今天前')
+              );
+            },
+            component: true,
+            addon: 'before',
+            days: 1,
+          },
+          {
+            id: EnumDateRange.today,
+            key: EnumDateRange.todayAfter,
+            get label() {
+              return langUtil.t(
+                intl.get('3dde7e01-d9ce-4834-b488-539f4b272ae7').d('今天后')
+              );
+            },
+            component: true,
+            addon: 'after',
+            days: 1,
+          },
+          {
+            id: EnumDateRange.thisWeek,
+            key: EnumDateRange.thisWeek,
+            addon: 'thisWeek',
+            get label() {
+              return langUtil.t(
+                intl.get('141318cd-e5f9-4582-87f7-12c03f6b6655').d('本周')
+              );
+            },
+          },
+          {
+            id: EnumDateRange.thisMonth,
+            key: EnumDateRange.thisMonth,
+            addon: 'thisMonth',
+            get label() {
+              return langUtil.t(
+                intl.get('0cd6870d-d30d-4f91-8bc0-d9f3ffc4ecb7').d('本月')
+              );
+            },
+          },
+          {
+            id: EnumDateRange.thisYear,
+            key: EnumDateRange.thisYear,
+            addon: 'thisYear',
+            get label() {
+              return langUtil.t(
+                intl.get('6ab79548-1909-4efa-be91-dd68d80003a5').d('本年')
+              );
+            },
+          },
+          {
+            id: EnumDateInitValue.defined,
+            key: EnumDateInitValue.defined,
+            get label() {
+              return langUtil.t(
+                intl.get('6c271021-8697-498a-8e06-d848d25c11fb').d('自定义')
+              );
+            },
+            component: true,
+          },
+        ],
+      },
+      'x-rules': [],
+    },
+
+    serviceTimeIds: {
+      //时间范围
+      name: 'serviceTimeIds',
+      colon: false,
+      type: 'array',
+      'x-component': DynamicEnumType?.serviceTimeRange,
+      readOnly: false,
+      'x-props': {},
+      'x-rules': [],
+    },
+    timeSelectRangeType: {
+      name: 'timeSelectRangeType',
+      colon: false,
+      readOnly: false,
+      required: true,
+      'x-component': DynamicEnumType?.timeRangType,
+      'x-props': {
+        defaultValue: 'ONLY_RANGE',
+        initOptions: [
+          {
+            id: 'ANY',
+            key: 'ANY',
+            get label() {
+              return intl
+                .get('16212dd1-c086-46a1-92f7-3a6347ba473c')
+                .d('允许选择任意时间');
+            },
+          },
+          {
+            id: 'ONLY_RANGE',
+            key: 'ONLY_RANGE',
+            get label() {
+              return intl
+                .get('6eae34bb-767a-4d60-b403-197b6ad954f3')
+                .d('允许选择范围内时间');
+            },
+          },
+          {
+            id: 'ONLY_RANGE_OUT',
+            key: 'ONLY_RANGE_OUT',
+            get label() {
+              return intl
+                .get('d162909f-5b7b-4685-ad42-dbf58316a6bd')
+                .d('不允许选择范围内时间');
+            },
+          },
+        ],
+      },
+      get title() {
+        return intl
+          .get('28ddc2c9-356c-44b8-b853-951c9e8bafef')
+          .d('时间校验规则');
+      },
+    },
+    extendSetting: {
+      name: 'extendSetting',
+      colon: false,
+      type: 'array',
+      'x-component': DynamicEnumType?.extendSetting,
+      readOnly: false,
+      'x-props': {},
+      'x-rules': [
+        {
+          required: true,
+          message: intl.get('90459ec5-25dc-4d5a-b097-ad968c39746f').d('请选择扩展类')
+        }
+      ],
+    },
+    dataDefault: {
+      // 默认值
+      name: 'dataDefault',
+      colon: false,
+      get title() {
+        return intl.get('fffa8517-67ee-4378-94b8-ddd90d15bca5').d('默认值');
+      },
+      type: 'string',
+      'x-component': DynamicEnumType?.dateInitValue,
+      readOnly: false,
+      'x-props': {
+        initOptions: [
+          {
+            id: EnumDateInitValue.none,
+            key: EnumDateInitValue.none,
+            get label() {
+              return langUtil.t(
+                intl.get('510f05cd-0d74-48d3-a6bc-15959c359f9e').d('无')
+              );
+            },
+            component: false,
+          },
+          {
+            id: EnumDateInitValue.today,
+            key: EnumDateInitValue.today,
+            get label() {
+              return langUtil.t(
+                intl.get('bcde096a-3a9b-4775-becd-7a8d12a6a1e9').d('当天时间')
+              );
+            },
+            component: false,
+          },
+          {
+            id: EnumDateInitValue.today,
+            key: EnumDateInitValue.todayBefore,
+            get label() {
+              return langUtil.t(
+                intl.get('28c21c3d-8843-4a76-b9dd-62db72f34629').d('当天时间前')
+              );
+            },
+            component: true,
+            addon: 'before',
+          },
+          {
+            id: EnumDateInitValue.today,
+            key: EnumDateInitValue.todayAfter,
+            get label() {
+              return langUtil.t(
+                intl.get('7cb21ce7-b686-43a8-8630-4b592a5af910').d('当天时间后')
+              );
+            },
+            component: true,
+            addon: 'after',
+          },
+          {
+            id: EnumDateInitValue.defined,
+            key: EnumDateInitValue.defined,
+            get label() {
+              return langUtil.t(
+                intl.get('6c271021-8697-498a-8e06-d848d25c11fb').d('自定义')
+              );
+            },
+            component: true,
+            type: 'dateRange'
+          },
+        ],
+
+        defaultValue: EnumDateInitValue.none,
+      },
+      'x-rules': [],
+    },
+    fieldHint: commonSchema.getFieldContent(EnumType.date),
+    fieldWidth: commonSchema.fieldWidth,
+    supportCopy: commonSchema.supportCopy,
+  },
+  labelWidth: 120,
+  displayType: 'row',
+};
+
 
